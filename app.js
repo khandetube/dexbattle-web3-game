@@ -1,0 +1,10 @@
+const $=s=>document.querySelector(s);
+const walletBtn=$("#walletBtn"),walletAddress=$("#walletAddress"),walletStatus=$("#walletStatus"),txBtn=$("#txBtn"),txStatus=$("#txStatus"),txHash=$("#txHash"),findBtn=$("#findBtn"),matchState=$("#matchState"),timer=$("#matchTimer"),switchBtn=$("#switchBtn");
+let connected=false,seconds=161;
+function setWallet(){connected=!connected;walletBtn.textContent=connected?"0x71C…2A9":"Connect Wallet";walletAddress.textContent=connected?"0x71C…2A9":"Not connected";walletStatus.textContent=connected?"CONNECTED":"OFFLINE";walletStatus.style.color=connected?"var(--green)":"var(--muted)";}
+walletBtn?.addEventListener("click",setWallet);
+findBtn?.addEventListener("click",()=>{matchState.textContent="MATCH FOUND · QUEUE LOCKED";findBtn.innerHTML="Match found ✓";document.querySelector("#arena")?.scrollIntoView({behavior:"smooth"});});
+switchBtn?.addEventListener("click",()=>{switchBtn.textContent="EVM network selected ✓";setTimeout(()=>switchBtn.textContent="Switch network",1600)});
+txBtn?.addEventListener("click",async()=>{if(!connected)setWallet();txBtn.disabled=true;txBtn.textContent="Awaiting signature…";txStatus.textContent="SIGNING";txStatus.style.color="var(--cyan)";await new Promise(r=>setTimeout(r,700));txBtn.textContent="Broadcasting…";txStatus.textContent="PENDING";txHash.textContent="0x9f3a…7c21 · awaiting confirmation";await new Promise(r=>setTimeout(r,1100));txBtn.textContent="Transaction confirmed ✓";txStatus.textContent="CONFIRMED";txStatus.style.color="var(--green)";txHash.textContent="0x9f3a…7c21 · block #21,904,881";setTimeout(()=>{txBtn.disabled=false;txBtn.textContent="Simulate entry transaction"},1700)});
+setInterval(()=>{seconds=seconds<=0?161:seconds-1;timer.textContent=String(Math.floor(seconds/60)).padStart(2,"0")+":"+String(seconds%60).padStart(2,"0")},1000);
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")}),{threshold:.12});document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
